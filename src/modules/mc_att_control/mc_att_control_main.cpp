@@ -779,7 +779,9 @@ MulticopterAttitudeControl::control_attitude_rates(float dt)
 				float rate_i = _rates_int(i) + _params.rate_i(i) * rates_err(i) * dt;
 
 				if (PX4_ISFINITE(rate_i) && rate_i > -RATES_I_LIMIT && rate_i < RATES_I_LIMIT &&
-				    _att_control(i) > -RATES_I_LIMIT && _att_control(i) < RATES_I_LIMIT) {
+				    _att_control(i) > -RATES_I_LIMIT && _att_control(i) < RATES_I_LIMIT &&
+				    /* the rate is not for yaw or yaw did not hit a limit */
+				    ((i != 2) || !_motor_limits.yaw)) {
 					_rates_int(i) = rate_i;
 				}
 			}
